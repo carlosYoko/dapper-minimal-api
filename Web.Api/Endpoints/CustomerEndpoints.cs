@@ -24,17 +24,31 @@ namespace Web.Api.Endpoints
                 using var connection = sqlConnectionFactory.Create();
 
                 const string sql = """
-                                 SELECT Id, FirstName, LastName, Email, DateOfBirth 
-                                 FROM Customers
-                                 WHERE Id = @CustomerId
-                                 """;
+                    SELECT Id, FirstName, LastName, Email, DateOfBirth 
+                    FROM Customers
+                    WHERE Id = @CustomerId
+                    """;
 
                 var customer = await connection.QuerySingleOrDefaultAsync<Customer>(sql, new { CustomerId = id });
 
                 return customer is not null ? Results.Ok(customer) : Results.NotFound();
+
             });
 
+            builder.MapPost("customers", async (Customer customer, SqlConnectionFactory sqlconnectionFactory) =>
+            {
+                using var connection = sqlconnectionFactory.Create();
 
+                const string sql = """"
+                    INSERT INTO Customers (FirstName, LastName, Email, DateOfBirth)
+                    VALUES (@FirstName, @LastName, @Email, @DateOfBirth)
+                    """";
+
+                await connection.ExecuteAsync(sql, customer);
+
+                return Results.Ok();
+
+            });
 
         }
     }
