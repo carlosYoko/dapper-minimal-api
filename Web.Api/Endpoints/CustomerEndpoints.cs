@@ -1,6 +1,6 @@
 ﻿using Dapper;
-using Microsoft.Data.SqlClient;
 using Web.Api.Models;
+using Web.Api.Services;
 
 namespace Web.Api.Endpoints
 {
@@ -8,11 +8,9 @@ namespace Web.Api.Endpoints
     {
         public static void MapCustomerEndpoints(this IEndpointRouteBuilder builder)
         {
-            builder.MapGet("customers", async (IConfiguration configuration) =>
+            builder.MapGet("customers", async (SqlConnectionFactory sqlConnectionFactory) =>
             {
-                var connectionString = configuration.GetConnectionString("DefaultConnection")!;
-
-                using var connection = new SqlConnection(connectionString);
+                using var connection = sqlConnectionFactory.Create();
 
                 const string sql = "SELECT Id, FirstName, LastName, Email, DateOfBirth FROM Customers";
 
