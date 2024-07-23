@@ -8,7 +8,9 @@ namespace Web.Api.Endpoints
     {
         public static void MapCustomerEndpoints(this IEndpointRouteBuilder builder)
         {
-            builder.MapGet("customers", async (SqlConnectionFactory sqlConnectionFactory) =>
+            var group = builder.MapGroup("customers");
+
+            group.MapGet("", async (SqlConnectionFactory sqlConnectionFactory) =>
             {
                 using var connection = sqlConnectionFactory.Create();
 
@@ -19,7 +21,7 @@ namespace Web.Api.Endpoints
                 return Results.Ok(customers);
             });
 
-            builder.MapGet("customers/{id}", async (int id, SqlConnectionFactory sqlConnectionFactory) =>
+            group.MapGet("{id}", async (int id, SqlConnectionFactory sqlConnectionFactory) =>
             {
                 using var connection = sqlConnectionFactory.Create();
 
@@ -35,7 +37,7 @@ namespace Web.Api.Endpoints
 
             });
 
-            builder.MapPost("customers", async (Customer customer, SqlConnectionFactory sqlconnectionFactory) =>
+            group.MapPost("", async (Customer customer, SqlConnectionFactory sqlconnectionFactory) =>
             {
                 using var connection = sqlconnectionFactory.Create();
 
@@ -50,7 +52,7 @@ namespace Web.Api.Endpoints
 
             });
 
-            builder.MapPut("customers/{id}", async (int id, Customer customer, SqlConnectionFactory sqlConnectionFactory) =>
+            group.MapPut("{id}", async (int id, Customer customer, SqlConnectionFactory sqlConnectionFactory) =>
             {
                 using var connection = sqlConnectionFactory.Create();
 
@@ -70,7 +72,7 @@ namespace Web.Api.Endpoints
                 return Results.NoContent();
             });
 
-            builder.MapDelete("customers/{id}", async (int id, SqlConnectionFactory sqlConnectionFactory) =>
+            group.MapDelete("/{id}", async (int id, SqlConnectionFactory sqlConnectionFactory) =>
             {
                 using var connection = sqlConnectionFactory.Create();
 
